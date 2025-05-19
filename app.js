@@ -11,10 +11,17 @@ const qrSize = 300;
 const qrMargin = 1;
 const qrECC = 'L';
 
-// ================== ENDPOINT ==================
-app.get('/qris', async (req, res) => {
+// ================== ROOT ENDPOINT ==================
+app.get('/', (req, res) => {
+    res.send('OKE');
+});
+
+// ================== QRIS ENDPOINT ==================
+app.get('/qris/:nominal', async (req, res) => {
     try {
-        let amount = parseInt(req.query.amount) || defaultAmount;
+        const amount = parseInt(req.params.nominal) || defaultAmount;
+
+        if (isNaN(amount)) throw new Error("Nominal tidak valid");
         if (amount < 100) throw new Error("Nominal minimal Rp100");
         if (amount > 500000) throw new Error("Nominal maksimal Rp500.000");
 
@@ -41,7 +48,7 @@ app.get('/qris', async (req, res) => {
         res.status(400).json({
             status: 'error',
             message: err.message,
-            usage: 'Gunakan: /qris?amount=NOMINAL (contoh: ?amount=5000)',
+            usage: 'Gunakan: /qris/NOMINAL (contoh: /qris/5000)',
             parameters: {
                 min_amount: 100,
                 max_amount: 500000,
