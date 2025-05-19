@@ -1,3 +1,7 @@
+[![Node.js](https://img.shields.io/badge/Node.js-18.x-brightgreen?logo=node.js)](https://nodejs.org/)
+[![Express](https://img.shields.io/badge/Express.js-Web%20Framework-blue?logo=express)](https://expressjs.com/)
+[![Status](https://img.shields.io/badge/status-BETA-orange)]()
+
 # QRIS Dynamic QR Code Generator API
 
 Sebuah aplikasi kecil menggunakan Node.js + Express yang menghasilkan QR Code QRIS secara dinamis berdasarkan nominal, tanpa menyimpan file ke disk. QR Code diambil dari API eksternal dan langsung dikirim sebagai gambar PNG.
@@ -14,13 +18,13 @@ Sebuah aplikasi kecil menggunakan Node.js + Express yang menghasilkan QR Code QR
 
 Pastikan Anda telah menginstal:
 
-- Node.js (versi 14 ke atas)
+- Node.js (versi 18 ke atas)
 - npm
 
 ## ⚙️ Instalasi
 
 ```bash
-git clone https://github.com/namauser/qris-api.git
+https://github.com/homwic/api-qris-lutify.git
 cd qris-api
 npm install
 ```
