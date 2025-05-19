@@ -1,6 +1,4 @@
 const express = require('express');
-const fs = require('fs');
-const path = require('path');
 const axios = require('axios');
 const crc = require('crc');
 const app = express();
@@ -12,10 +10,6 @@ const defaultAmount = 10000;
 const qrSize = 300;
 const qrMargin = 1;
 const qrECC = 'L';
-const tempDir = path.join(__dirname, 'temp_qris');
-
-// Buat folder jika belum ada
-if (!fs.existsSync(tempDir)) fs.mkdirSync(tempDir, { recursive: true });
 
 // ================== ENDPOINT ==================
 app.get('/qris', async (req, res) => {
@@ -39,24 +33,9 @@ app.get('/qris', async (req, res) => {
         const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=${qrSize}x${qrSize}&data=${encodeURIComponent(qrisStr)}&margin=${qrMargin}&ecc=${qrECC}`;
         const response = await axios.get(qrUrl, { responseType: 'arraybuffer', timeout: 5000 });
 
-        // Simpan ke file
-        const filename = `qris_${Date.now()}.png`;
-        const filepath = path.join(tempDir, filename);
-        fs.writeFileSync(filepath, response.data);
-
-        const fullUrl = `${req.protocol}://${req.get('host')}/temp_qris/${filename}`;
-
-        // Output JSON
-        res.json({
-            status: "success",
-            message: "QRIS generated successfully",
-            data: {
-                amount,
-                qris_string: qrisStr,
-                qris_url: fullUrl,
-                expiry: new Date(Date.now() + 3600 * 1000).toISOString()
-            }
-        });
+        // Kirim gambar langsung sebagai response
+        res.setHeader('Content-Type', 'image/png');
+        res.send(response.data);
 
     } catch (err) {
         res.status(400).json({
@@ -77,9 +56,6 @@ function calculateCRC(data) {
     const buffer = Buffer.from(data, 'utf-8');
     return crc.crc16ccitt(buffer).toString(16).toUpperCase().padStart(4, '0');
 }
-
-// ================== STATIC FILES ==================
-app.use('/temp_qris', express.static(tempDir));
 
 // ================== START SERVER ==================
 app.listen(PORT, () => {
